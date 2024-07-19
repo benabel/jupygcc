@@ -79,3 +79,9 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+
+[project.entry-points."ipython.extensions"]
+jupygcc = "jupygcc.gcc_magic:gcc_magic"
+
+[tool.hatch.metadata]
+allow-direct-references = true
