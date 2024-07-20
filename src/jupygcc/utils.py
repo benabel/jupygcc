@@ -59,8 +59,8 @@ return 0;
             check=True,
             capture_output=True,
         )
-        print("Compilation output:", compile_process.stdout)
-        print("Compilation errors:", compile_process.stderr)
+        # print("Compilation output:", compile_process.stdout)
+        # print("Compilation errors:", compile_process.stderr)
 
         # Step 2: Run the compiled executable
         run_command = ["./test_code"]
@@ -71,7 +71,8 @@ return 0;
             text=True,
             input=metadata_dict.get("stdin"),
         )
-        print("Program output:", run_process.stdout)
+        # print program ouput
+        print(run_process.stdout)
 
         # Clean up: Remove the compiled executable
 
