@@ -22,4 +22,4 @@ printf("%d lignes", n);
 """
     )
 
-print("Tests succeeded")
+

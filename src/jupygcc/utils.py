@@ -5,6 +5,7 @@ import re
 
 
 def handle_metadata(cell_code: str):
+    # print(f"CELL CODE {cell_code}")
     # Define regular expression pattern for metadata
     metadata_pattern = r"^//\| (\w+): (.*)$"
 
@@ -60,16 +61,18 @@ return 0;
             capture_output=True,
         )
         # print("Compilation output:", compile_process.stdout)
-        # print("Compilation errors:", compile_process.stderr)
+        if compile_process.stderr:
+            print("Compilation errors:", compile_process.stderr)
 
         # Step 2: Run the compiled executable
+        stdin = metadata_dict.get("stdin")
         run_command = ["./test_code"]
         run_process = subprocess.run(
             run_command,
             check=True,
             capture_output=True,
             text=True,
-            input=metadata_dict.get("stdin"),
+            input=stdin,
         )
         # print program ouput
         print(run_process.stdout)
@@ -79,4 +82,4 @@ return 0;
         os.remove("test_code")
         return run_process.stdout
     except subprocess.CalledProcessError as e:
-        return f"Error: {e}\n{e.stderr}"
+        print(f"Execution Error: {e}\n{e.stderr}")
