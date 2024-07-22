@@ -52,7 +52,7 @@ return 0;
 
     try:
         # Step 1: Compile the C code from the string
-        compile_command = split("gcc -std=c99 -x c -o test_code -")
+        compile_command = split("gcc -std=c99 -x c -o jupygcc_code -")
         compile_process = subprocess.run(
             compile_command,
             input=c_code,
@@ -66,7 +66,7 @@ return 0;
 
         # Step 2: Run the compiled executable
         stdin = metadata_dict.get("stdin")
-        run_command = ["./test_code"]
+        run_command = ["./jupygcc_code"]
         run_process = subprocess.run(
             run_command,
             check=True,
@@ -79,7 +79,7 @@ return 0;
 
         # Clean up: Remove the compiled executable
 
-        os.remove("test_code")
+        os.remove("jupygcc_code")
         return run_process.stdout
     except subprocess.CalledProcessError as e:
         print(f"Execution Error: {e}\n{e.stderr}")
