@@ -3,9 +3,7 @@ from shlex import split
 import os
 import re
 
-
 def handle_metadata(cell_code: str):
-    # print(f"CELL CODE {cell_code}")
     # Define regular expression pattern for metadata
     metadata_pattern = r"^//\| (\w+): (.*)$"
 
@@ -19,7 +17,6 @@ def handle_metadata(cell_code: str):
         if match:
             metadata_dict[match.group(1)] = match.group(2)
     return metadata_dict, code
-
 
 def has_main_function(c_code):
     """
@@ -35,6 +32,19 @@ def has_main_function(c_code):
 
     return bool(main_func_match)
 
+def modify_code_for_interactive_input(c_code: str) -> str:
+    # Regex to find scanf statements
+    scanf_pattern = re.compile(r'scanf\s*\(\s*"%(\w+)"\s*,\s*&([^;]+)\s*\)\s*;')
+
+    # Function to replace scanf with scanf and printf
+    def replace_scanf(match):
+        type_specifier = match.group(1)
+        variable = match.group(2)
+        return f'scanf("%{type_specifier}", &{variable}); printf("%{type_specifier}\\n", {variable});'
+
+    # Replace all scanf statements
+    modified_code = scanf_pattern.sub(replace_scanf, c_code)
+    return modified_code
 
 def compile_run_c(c_code: str, metadata_dict: dict):
     if not has_main_function(c_code):
@@ -49,6 +59,9 @@ int main() {{
 {c_code}
 return 0;
 }}"""
+
+    # Modify the code to add printf after scanf
+    c_code = modify_code_for_interactive_input(c_code)
 
     try:
         # Step 1: Compile the C code from the string
@@ -74,11 +87,15 @@ return 0;
             text=True,
             input=stdin,
         )
-        # print program ouput
+        # Print program output
+        if stdin:
+            entrées = f"Entrées: {stdin}"
+            sep = "-" * len(entrées)
+            print(f"{sep}\nEntrées: {stdin}\n{sep}")
+            print("Sortie")
         print(run_process.stdout)
 
         # Clean up: Remove the compiled executable
-
         os.remove("jupygcc_code")
         return run_process.stdout
     except subprocess.CalledProcessError as e:
