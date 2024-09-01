@@ -73,7 +73,9 @@ return 0;
             check=True,
             capture_output=True,
         )
-        # print("Compilation output:", compile_process.stdout)
+        
+        if compile_process.stdout:
+            print("Compilation output:", compile_process.stdout)
         if compile_process.stderr:
             print("Compilation errors:", compile_process.stderr)
 
