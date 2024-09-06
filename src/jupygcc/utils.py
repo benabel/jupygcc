@@ -89,12 +89,7 @@ return 0;
             text=True,
             input=stdin,
         )
-        # Print program output
-        if stdin:
-            entrées = f"Entrées: {stdin}"
-            sep = "-" * len(entrées)
-            print(f"{sep}\nEntrées: {stdin}\n{sep}")
-            print("Sortie")
+        
         print(run_process.stdout)
 
         # Clean up: Remove the compiled executable
