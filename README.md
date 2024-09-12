@@ -31,7 +31,7 @@ Currently, the kernel can't be configured and will always use:
 
 ### Cell metadata
 
-Currently, the only cell metadata handled is `stdin` for non-interactive `scanf` calls:
+Currently, the only cell metadata handled is `stdin` for non-interactive `scanf` and `gets` calls:
 
 ```{c}
 //| stdin: 10

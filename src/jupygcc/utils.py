@@ -36,14 +36,25 @@ def modify_code_for_interactive_input(c_code: str) -> str:
     # Regex to find scanf statements
     scanf_pattern = re.compile(r'scanf\s*\(\s*"%(\w+)"\s*,\s*&([^;]+)\s*\)\s*;')
 
+    # Regex to find gets statements
+    gets_pattern = re.compile(r'gets\s*\(\s*([^;]+)\s*\)\s*;')
+
     # Function to replace scanf with scanf and printf
     def replace_scanf(match):
         type_specifier = match.group(1)
         variable = match.group(2)
         return f'scanf("%{type_specifier}", &{variable}); printf("%{type_specifier}\\n", {variable});'
 
-    # Replace all scanf statements
+    # Function to replace gets with gets and printf
+    # TODO not optimal if multiple strings to enter
+    def replace_gets(match):
+        variable = match.group(1)
+        return f'gets({variable}); printf("%s\\n", {variable});'
+
+    # Replace all scanf and gets statements
     modified_code = scanf_pattern.sub(replace_scanf, c_code)
+    modified_code = gets_pattern.sub(replace_gets, modified_code)
+
     return modified_code
 
 def compile_run_c(c_code: str, metadata_dict: dict):
