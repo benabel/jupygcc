@@ -65,6 +65,7 @@ def compile_run_c(c_code: str, metadata_dict: dict):
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 int main() {{
 {c_code}
@@ -76,7 +77,7 @@ return 0;
 
     try:
         # Step 1: Compile the C code from the string
-        compile_command = split("gcc -std=c99 -x c -o jupygcc_code -")
+        compile_command = split("gcc -std=c99 -x c -o jupygcc_code - -lm")
         compile_process = subprocess.run(
             compile_command,
             input=c_code,

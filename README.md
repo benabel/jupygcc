@@ -21,12 +21,12 @@ Currently, the kernel can't be configured and will always use:
 - Wrap the code in a ``main`` function if it doesn't already have one with:
 
   ```c
-  #include <assert.h>
   #include <stdbool.h>
   #include <stddef.h>
   #include <stdint.h>
   #include <stdio.h>
   #include <stdlib.h>
+  #include <math.h>
   ```
 
 ### Cell metadata
