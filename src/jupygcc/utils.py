@@ -38,6 +38,10 @@ def modify_code_for_interactive_input(c_code: str) -> str:
 
     # Regex to find gets statements
     gets_pattern = re.compile(r'gets\s*\(\s*([^;]+)\s*\)\s*;')
+    
+    # Regex to find fgets statements
+    fgets_pattern = re.compile(r'fgets\(([^,]+).*\);')
+
 
     # Function to replace scanf with scanf and printf
     def replace_scanf(match):
@@ -51,10 +55,15 @@ def modify_code_for_interactive_input(c_code: str) -> str:
         variable = match.group(1)
         return f'gets({variable}); printf("%s\\n", {variable});'
 
+    # Function to replace fgets with fgets and printf
+    def replace_fgets(match):
+        variable = match.group(1)
+        return f'{match.group(0)} printf("%s\\n", {variable});'
+
     # Replace all scanf and gets statements
     modified_code = scanf_pattern.sub(replace_scanf, c_code)
     modified_code = gets_pattern.sub(replace_gets, modified_code)
-
+    modified_code = fgets_pattern.sub(replace_fgets, modified_code)
     return modified_code
 
 def compile_run_c(c_code: str, metadata_dict: dict):
