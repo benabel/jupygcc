@@ -36,6 +36,7 @@ path = "src/jupygcc/__about__.py"
 [tool.hatch.envs.default]
 dependencies = [
   "ipython",
+  "pexpect",
   "coverage[toml]>=6.5",
   "pytest",
 ]

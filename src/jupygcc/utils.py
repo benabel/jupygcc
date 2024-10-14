@@ -1,5 +1,5 @@
 import subprocess
-from shlex import split
+import pexpect
 import os
 import re
 
@@ -32,39 +32,7 @@ def has_main_function(c_code):
 
     return bool(main_func_match)
 
-def modify_code_for_interactive_input(c_code: str) -> str:
-    # Regex to find scanf statements
-    scanf_pattern = re.compile(r'scanf\s*\(\s*"%(\w+)"\s*,\s*&([^;]+)\s*\)\s*;')
 
-    # Regex to find gets statements
-    gets_pattern = re.compile(r'gets\s*\(\s*([^;]+)\s*\)\s*;')
-    
-    # Regex to find fgets statements
-    fgets_pattern = re.compile(r'fgets\(([^,]+).*\);')
-
-
-    # Function to replace scanf with scanf and printf
-    def replace_scanf(match):
-        type_specifier = match.group(1)
-        variable = match.group(2)
-        return f'scanf("%{type_specifier}", &{variable}); printf("%{type_specifier}\\n", {variable});'
-
-    # Function to replace gets with gets and printf
-    # TODO not optimal if multiple strings to enter
-    def replace_gets(match):
-        variable = match.group(1)
-        return f'gets({variable}); printf("%s\\n", {variable});'
-
-    # Function to replace fgets with fgets and printf
-    def replace_fgets(match):
-        variable = match.group(1)
-        return f'{match.group(0)} printf("%s\\n", {variable});'
-
-    # Replace all scanf and gets statements
-    modified_code = scanf_pattern.sub(replace_scanf, c_code)
-    modified_code = gets_pattern.sub(replace_gets, modified_code)
-    modified_code = fgets_pattern.sub(replace_fgets, modified_code)
-    return modified_code
 
 def compile_run_c(c_code: str, metadata_dict: dict):
     if not has_main_function(c_code):
@@ -81,12 +49,9 @@ int main() {{
 return 0;
 }}"""
 
-    # Modify the code to add printf after scanf
-    c_code = modify_code_for_interactive_input(c_code)
-
     try:
         # Step 1: Compile the C code from the string
-        compile_command = split("gcc -std=c99 -x c -o jupygcc_code - -lm")
+        compile_command = "gcc -std=c99 -x c -o jupygcc_code - -lm".split()
         compile_process = subprocess.run(
             compile_command,
             input=c_code,
@@ -94,27 +59,36 @@ return 0;
             check=True,
             capture_output=True,
         )
-        
+
         if compile_process.stdout:
             print("Compilation output:", compile_process.stdout)
         if compile_process.stderr:
             print("Compilation errors:", compile_process.stderr)
 
-        # Step 2: Run the compiled executable
-        stdin = metadata_dict.get("stdin")
-        run_command = ["./jupygcc_code"]
-        run_process = subprocess.run(
-            run_command,
-            check=True,
-            capture_output=True,
-            text=True,
-            input=stdin,
-        )
+        # Step 2: Run the compiled executable using pexpect
+        stdin = metadata_dict.get("stdin", "")
+        child = pexpect.spawn('./jupygcc_code')
         
-        print(run_process.stdout)
+        # Split inputs on lines or spaces
+        stdins = stdin.split("\\n")
+        if len(stdins) == 1:
+            stdins = stdin.split(" ")
+        
+        for stdin in stdins:
+                child.sendline(stdin)
+
+        # Wait for the program to finish and capture the output
+        child.expect(pexpect.EOF)
+        output = child.before.decode('utf-8')
+
+        print(output)
 
         # Clean up: Remove the compiled executable
         os.remove("jupygcc_code")
-        return run_process.stdout
+
     except subprocess.CalledProcessError as e:
         print(f"Execution Error: {e}\n{e.stderr}")
+    except pexpect.exceptions.ExceptionPexpect as e:
+        print(f"Pexpect Error: {e}")
+
+  
