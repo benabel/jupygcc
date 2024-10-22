@@ -3,6 +3,8 @@
 # Change la version dans le package.json
 # Créé un tag v...
 # Pousse vers github ou l'action de release sera lancée
+#
+#  git commit --amend --no-edit  &&  git push --delete origin v0.0.4 && git tag v0.0.4 -d && git tag v0.0.4 && git push -f && git push origin v0.0.4
 #===============================================================================
 
 set -o nounset                              # Treat unset variables as an error
@@ -31,6 +33,6 @@ else
     git tag v$NEW_VERSION
 
     # Pousser les changements et le tag vers le dépôt distant
-    git push origin main  # Remplacez 'main' par le nom de votre branche
+    git push origin -f main  # Remplacez 'main' par le nom de votre branche
     git push origin v$NEW_VERSION
 fi

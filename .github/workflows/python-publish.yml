@@ -11,6 +11,9 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
     steps:
     
     - uses: actions/checkout@v4
@@ -27,5 +30,5 @@ jobs:
     - name: Build
       run: uv run hatch build
       
-    - name: Publish
-      run: uv publish
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
