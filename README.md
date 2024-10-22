@@ -17,7 +17,7 @@ pip install jupygcc
 
 Currently, the kernel can't be configured and will always use:
 
-- ``-std=c99`` for C code
+- `-std=c99 -Wall` for C code
 - Wrap the code in a ``main`` function if it doesn't already have one with:
 
   ```c

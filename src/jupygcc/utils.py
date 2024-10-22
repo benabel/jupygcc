@@ -51,7 +51,7 @@ return 0;
 
     try:
         # Step 1: Compile the C code from the string
-        compile_command = "gcc -std=c99 -x c -o jupygcc_code - -lm".split()
+        compile_command = "gcc -std=c99 -Wall -x c -o jupygcc_code - -lm".split()
         compile_process = subprocess.run(
             compile_command,
             input=c_code,
