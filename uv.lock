@@ -359,14 +359,22 @@ wheels = [
 
 [[package]]
 name = "jupygcc"
-version = "0.0.2"
+version = "0.0.4"
 source = { editable = "." }
 dependencies = [
     { name = "hatch" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "hatch" },
+]
+
 [package.metadata]
 requires-dist = [{ name = "hatch", specifier = ">=1.13.0" }]
+
+[package.metadata.requires-dev]
+dev = [{ name = "hatch", specifier = ">=1.13.0" }]
 
 [[package]]
 name = "keyring"

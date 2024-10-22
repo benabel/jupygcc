@@ -84,5 +84,10 @@ exclude_lines = [
   "if TYPE_CHECKING:",
 ]
 
+[tool.uv]
+dev-dependencies = [
+    "hatch>=1.13.0",
+]
+
 [tool.hatch.metadata]
 allow-direct-references = true

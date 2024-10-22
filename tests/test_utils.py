@@ -21,5 +21,3 @@ scanf("%d", &n);
 printf("%d lignes", n);
 """
     )
-
-

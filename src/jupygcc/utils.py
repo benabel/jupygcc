@@ -3,6 +3,7 @@ import pexpect
 import os
 import re
 
+
 def handle_metadata(cell_code: str):
     # Define regular expression pattern for metadata
     metadata_pattern = r"^//\| (\w+): (.*)$"
@@ -18,6 +19,7 @@ def handle_metadata(cell_code: str):
             metadata_dict[match.group(1)] = match.group(2)
     return metadata_dict, code
 
+
 def has_main_function(c_code):
     """
     Check if there is a main function in the given C code.
@@ -31,7 +33,6 @@ def has_main_function(c_code):
     main_func_match = re.search(main_func_pattern, c_code, re.MULTILINE)
 
     return bool(main_func_match)
-
 
 
 def compile_run_c(c_code: str, metadata_dict: dict):
@@ -67,19 +68,19 @@ return 0;
 
         # Step 2: Run the compiled executable using pexpect
         stdin = metadata_dict.get("stdin", "")
-        child = pexpect.spawn('./jupygcc_code')
-        
+        child = pexpect.spawn("./jupygcc_code")
+
         # Split inputs on lines or spaces
         stdins = stdin.split("\\n")
         if len(stdins) == 1:
             stdins = stdin.split(" ")
-        
+
         for stdin in stdins:
-                child.sendline(stdin)
+            child.sendline(stdin)
 
         # Wait for the program to finish and capture the output
         child.expect(pexpect.EOF)
-        output = child.before.decode('utf-8')
+        output = child.before.decode("utf-8")
 
         print(output)
 
@@ -90,5 +91,3 @@ return 0;
         print(f"Execution Error: {e}\n{e.stderr}")
     except pexpect.exceptions.ExceptionPexpect as e:
         print(f"Pexpect Error: {e}")
-
-  
