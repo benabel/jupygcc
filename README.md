@@ -13,6 +13,41 @@ pip install jupygcc
 
 ## Usage
 
+Load the extension.
+
+````markdown
+```{python}
+#| echo: false
+#| output: false
+%load_ext jupygcc
+```
+````
+Provides both `%gcc` line magic that takes a c filename as argument and `%%gcc`
+cell magic that handle c code in the cell.
+
+Line magic.
+
+````markdown
+```{python}
+%gcc ex1/main.c
+```
+````
+
+Cell magic.
+
+````markdown
+#include <stdio.h>
+int somme(int n) {
+  if (n <= 0)
+    return 0;
+  else
+    return (n + somme(n - 1));
+}
+int main() {
+  printf("u(%d= %d", 6, somme(6));
+  return 0;
+}
+````
 ### Configuration
 
 Currently, the kernel can't be configured and will always use:
@@ -31,7 +66,7 @@ Currently, the kernel can't be configured and will always use:
 
 ### Cell metadata
 
-Currently, the only cell metadata handled is `stdin` for non-interactive `scanf` and `gets` calls:
+Currently, the only cell metadata handled is `stdin`.:
 
 ```{c}
 //| stdin: 10
