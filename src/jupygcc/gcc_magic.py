@@ -14,7 +14,6 @@ class GccMagic(Magics):
                 compile_run_c(code, metadata_dict)
             #return line
         else:
-            print("Called as cell magic")
             metadata_dict, code = handle_metadata(cell)
             compile_run_c(code, metadata_dict)
             #return line, cell
